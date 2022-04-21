@@ -13,7 +13,7 @@ class CustomView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    private var rec: Rect = Rect()
+    private val rec: Rect = Rect()
 
     //to smooth the text drawing (look it up)
     private var paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -60,8 +60,14 @@ class CustomView @JvmOverloads constructor(
         rec.bottom = rec.top + squareSize
         rec.right = rec.left + squareSize
 
-
         canvas?.drawRect(rec, paint)
+
+        //cx,cy is represent the space from X,Y axis
+        val radius = 100f
+        val cx = width - radius
+        val cy= (rec.width()/2).toFloat()
+        canvas?.drawCircle(cx,cy,radius,paint)
+
     }
 
     companion object {
