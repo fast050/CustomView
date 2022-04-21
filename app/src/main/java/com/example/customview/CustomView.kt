@@ -6,7 +6,9 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
+import kotlin.math.pow
 
 class CustomView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null,
@@ -17,10 +19,17 @@ class CustomView @JvmOverloads constructor(
 
     //to smooth the text drawing (look it up)
     private var paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
     //add color to your shape in your xml
     private var squareColor: Int = 0
+
     //add size of your shape in your xml
-    private var squareSize: Int =0
+    private var squareSize: Int = 0
+
+    //property of circle
+    private var radius = 100f
+    private var cx: Float = 0f
+    private var cy: Float = 0f
 
     init {
         if (attrs != null) {
@@ -32,6 +41,7 @@ class CustomView @JvmOverloads constructor(
             squareSize =
                 arrayType.getDimensionPixelSize(R.styleable.CustomView_square_size, SHAPE_SIZE)
 
+            paint.style = Paint.Style.FILL
             paint.color = squareColor
             //to clear the arrayType object
             arrayType.recycle()
@@ -62,13 +72,68 @@ class CustomView @JvmOverloads constructor(
 
         canvas?.drawRect(rec, paint)
 
+
+        if (cx == 0f || cy == 0f) {
+            cx = (width / 2).toFloat()
+            cy = (height / 2).toFloat()
+        }
+
         //cx,cy is represent the space from X,Y axis
-        val radius = 100f
-        val cx = width - radius
-        val cy= (rec.width()/2).toFloat()
-        canvas?.drawCircle(cx,cy,radius,paint)
+        canvas?.drawCircle(cx, cy, radius, paint)
 
     }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        val boolean = super.onTouchEvent(event)
+
+
+        when (event?.action) {
+
+
+
+            //
+            MotionEvent.ACTION_DOWN->{
+
+//                val x = event.x
+//                val y = event.y
+//
+//                if( (rec.left<x && x>rec.right) && (rec.top<y && y>rec.bottom)){
+//                    radius += 10f
+//
+//                    postInvalidate()
+//
+                    return true
+//                }
+            }
+
+            //drag and drop feature
+            MotionEvent.ACTION_MOVE -> {
+
+                val x = event.x
+                val y = event.y
+
+                val dx = (x - cx).pow(2)
+                val dy = (y - cy).pow(2)
+
+                if (dx + dy < (radius).pow(2)) {
+                    cx = x
+                    cy = y
+                    // circle touched
+                    postInvalidate()
+
+                    return true
+                }
+
+                return boolean
+            }
+
+
+        }
+
+
+        return boolean
+    }
+
 
     companion object {
         const val SHAPE_INIT_COLOR = Color.GREEN
