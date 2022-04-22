@@ -7,22 +7,27 @@ import com.example.customview.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var binding:ActivityMainBinding
+    lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val customView = findViewById<CustomView>(R.id.custom_view)
-
-
         binding.apply {
 
-         button.setOnClickListener {
-             customView.swapColor()
-         }
+            button.setOnClickListener {
 
+                customView.swapColor()
+
+            }
+
+            var isClicked= false
+            customCardView.setOnClickListener {
+                customCardView.setImage(R.drawable.rick_and_morty_surprise)
+                customCardView.setCheckBoxState(!isClicked)
+                customCardView.setText("First custom View Ever")
+            }
         }
     }
 }
